@@ -4,26 +4,21 @@
     Controller used to handle connectivity finite state machine logic
 --------------------*/
 var initConFSM = function() {
-    httpConnectivity = new HttpConnectivityFsm({
-        stethoscope: new Stethoscope() 
+    App.httpConnectivity = new HttpConnectivityFsm({
+        stethoscope: Stethoscope
     });
-    httpConnectivity.on("transition", function( data ) {
+    App.httpConnectivity.on("transition", function( data ) {
            $('#content').removeClass( data.fromState ).addClass( data.toState );
-           log("We're",data.toState);
+           App.log("We're",data.toState);
     });
 
-    ajaxManager = new ActManagementFsm({
-        httpConnectivityFsm: httpConnectivity
+    App.ajaxManager = new ActManagementFsm({
+        httpConnectivityFsm: App.httpConnectivity
     });
 };
 
-
 // We're getting a customized FSM constructor which we
-// can use later to create an instance. Please note that
-// I'm leaving off any "wrapper methods" at the top of
-// the FSM (methods that would wrap the "handle" call).
-// For the sake of keeping this example somewhat simple, 
-// we'll just use the handle call directly...
+// can use later to create an instance. 
 var HttpConnectivityFsm = machina.Fsm.extend({
     
     // we'll assume we're offline and let the app
@@ -68,8 +63,6 @@ var HttpConnectivityFsm = machina.Fsm.extend({
         });
     },
 
-
-
     states : {
         probing : {
         
@@ -85,7 +78,7 @@ var HttpConnectivityFsm = machina.Fsm.extend({
             // transition to a new state, then the value of the
             // handler can be the string name of the state to
             // which we should transition, instead of a function.
-            heartbeat      : "online",
+            "heartbeat"      : "online",
             "no-heartbeat" : "disconnected",
             "go.offline"   : "offline",
             
@@ -119,28 +112,28 @@ var HttpConnectivityFsm = machina.Fsm.extend({
         offline : {
             "go.online" : "probing"
         }
+    },
+    // wrapper functions to allow App.httpConnectivity.goOnline(); and App.httpConnectivity.goOffline();
+    // as convienience functions.
+    goOnline: function() {
+        this.handle('go.online');
+    },
+    goOffline: function() {
+        this.handle('go.offline');
     }
 });
 
-var Stethoscope = function ( heartbeatDef ) {
-    this.settings = $.extend( {
-        type : "GET",
-        dataType : "json",
-        timeout : 5000
-    }, heartbeatDef );
-};
-
-$.extend( Stethoscope.prototype, {
+var Stethoscope =  {
+    // simple heartbeat act call -cloud side immediately returns a response.
     checkHeartbeat : function () {
         var self = $(this);
         self.trigger( 'checking-heartbeat' );
         Act.call("heartbeat", {},
             function(res){
-                    console.log("heartbeat??");
                  self.trigger( 'heartbeat' );
             }, function(msg, err){
                  self.trigger( 'no-heartbeat' );
             }
         );
     }
-});
+};

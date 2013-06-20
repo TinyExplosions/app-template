@@ -2,9 +2,9 @@
 var sendAction = function(act, options, successFn, failFn) {
     Act.call(act, options,
         function(res){
-            log(act,"called, with params",options);
+            App.log(act,"called, with params",options);
         }, function(msg, err){
-            log(act,"failed, with params",options);
+            App.log(act,"failed, with params",options);
         }
     );
 };

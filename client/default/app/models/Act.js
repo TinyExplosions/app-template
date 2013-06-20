@@ -21,12 +21,12 @@ var Act = (function(module) {
 	 */
 	function call(func, params, successFn, failFn){
 		if(!func || !successFn || !failFn){
-			// console.log('missing act name or callbacks');
+			// App.log('missing act name or callbacks');
 			return false;
 		}
 
 		params = params || {};
-		log('hello');
+		App.log('hello');
 		$fh.act({
 			'act' : func,
 			'req' : params
@@ -43,9 +43,9 @@ var Act = (function(module) {
 /*
 	Act.call("getConfig", {param1: true},
 		function(res){
-			console.log(res);
+			App.log(res);
 		}, function(msg, err){
-			console.log("Act Error:", msg);
+			App.log("Act Error:", msg);
 		}
 	);
 */

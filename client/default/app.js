@@ -4,10 +4,10 @@
 initConFSM();
 $(document).ready(function(){
 	if(g_debug){
-		log('App Initializing...');
+		App.log('App Initializing...');
 	}
     //Attempt to go online via Connectivity FSM
-    httpConnectivity.handle('go.online');
+    App.httpConnectivity.handle('go.online');
 	uiInit();
 	initOriHandler(); // setup orientation handler if needed
 	overRide(); // run iOS or Android overrides
@@ -20,7 +20,7 @@ $(document).ready(function(){
  */
 function uiInit(pagesArray){
 	if(g_debug){
-		log('UI Initializing...');
+		App.log('UI Initializing...');
 	}
 
 	// TODO: move this to Login View file
